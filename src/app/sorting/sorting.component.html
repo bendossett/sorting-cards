@@ -1,0 +1,46 @@
+<div class="wrapper">
+    <div class="instructionsContainer">
+        <h3>Instructions</h3>
+        <button (click)="toggleInstructions()">Show/Hide</button>
+        <div class="instructions" [hidden]="!showInstructions">
+            <h3>Double click a card to edit the value.</h3>
+            <h3>Triple click a card to delete it</h3>
+        </div>
+    </div>
+
+    <div class="cardContainer">
+        <div class="flex-wrapper" cdkDropList cdkDropListOrientation="horizontal" (cdkDropListDropped)="drop($event)">
+            <div class="card" cdkDrag *ngFor="let card of cards; index as i" 
+                [appEditable]="card.value" [cardType]="'sorting'" [cardIndex]="i" 
+                (onChange)="onChange($event)" (onDelete)="onDelete($event)" 
+                [style.fontSize]="cardFontSize">
+                <div class="placeholder" *cdkDragPlaceholder></div>
+            </div>
+        </div>
+        <div class="card" cdkDrag *ngFor="let card of freeRangeCards; index as i" 
+            [appEditable]="card.value" [cardType]="'free'" [cardIndex]="i" 
+            (onChange)="onChange($event)" (onDelete)="onDelete($event)" 
+            [style.fontSize]="cardFontSize">
+            <div class="placeholder" *cdkDragPlaceholder></div>
+        </div>
+    </div>
+
+    <div class="cardManagement">
+        <h2>Total Sorting Cards: {{cards.length}}</h2>
+
+        <h2>Add Sorting Cards</h2>
+        <h3>Cards will have random values to start, choose the range below</h3>
+
+        <div class="valuesContainer">
+            <input #min type="text" placeholder="Min" (blur)="setMin(min.value)">
+            <input #max type="text" placeholder="Max" (blur)="setMax(max.value)">
+        </div>
+
+        <input #add type="text" placeholder="# of cards" (keyup.enter)="addCards(add.value)">
+        <button (click)="addCards(add.value)">Add Cards</button>
+                
+        <h2>Add a free moving card (for keeping track of indicies, etc)</h2>
+        <input #addFree type="text" placeholder="# of cards" (keyup.enter)="addFreeRangeCards(addFree.value)">
+        <button (click)="addFreeRangeCards(addFree.value)">Add Cards</button>
+    </div>
+</div>
