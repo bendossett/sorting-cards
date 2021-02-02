@@ -1,10 +1,14 @@
-<header>
-    <h1>Sorting Cards</h1>
-</header>
-<main>
-    <app-sorting></app-sorting>
-</main>
-<footer>
-    <p>Created by Ben Dossett</p>
-    <p>Credit to https://gist.github.com/yokoishioka/f746f261a86c91ffb2a4ffdeef18a096 for the editable text!</p>
-</footer>
+<section class="full" fxLayout="column">
+    <mat-toolbar>
+        <span>Sorting Cards</span>
+    </mat-toolbar>
+    <mat-drawer-container class="full">
+        <mat-drawer-content>
+            <router-outlet></router-outlet>
+        </mat-drawer-content>
+    </mat-drawer-container>
+    <mat-toolbar fxFlexOffset="auto">
+        <p>Created by Ben Dossett</p><br>
+        <p>Credit to https://gist.github.com/yokoishioka/f746f261a86c91ffb2a4ffdeef18a096 for the editable text!</p>
+    </mat-toolbar>
+</section>

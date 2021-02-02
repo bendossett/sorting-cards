@@ -1,46 +1,70 @@
-<div class="wrapper">
-    <div class="instructionsContainer">
-        <h3>Instructions</h3>
-        <button (click)="toggleInstructions()">Show/Hide</button>
-        <div class="instructions" [hidden]="!showInstructions">
+<div id="wrapper" fxLayout="column" fxLayoutAlign="space-between">
+    <div class="flex-item" fxLayoutAlign="center center">
+        <button mat-flat-button color="primary" [matMenuTriggerFor]="instructions">Instructions</button>
+        <mat-menu #instructions="matMenu">
             <h3>Double click a card to edit the value.</h3>
             <h3>Triple click a card to delete it</h3>
+        </mat-menu>
+    </div>
+    <div class="flex-item">
+        <div id="cards" fxLayout="row nowrap" fxLayoutAlign="space-evenly center" cdkDropList cdkDropListOrientation="horizontal" (cdkDropListDropped)="drop($event)">
+            <mat-card fxLayout="col" fxLayoutAlign="center center" cdkDrag *ngFor="let card of cards; index as i" 
+                [appEditable]="card.value" [cardType]="'sorting'" [cardIndex]="i" 
+                (onChange)="onChange($event)" (onDelete)="onDelete($event)"
+                [style.fontSize]="cardFontSize" [style.width]="cardSize" [style.height]="cardSize">
+                <mat-card *cdkDragPlaceholder></mat-card>
+            </mat-card>
         </div>
+        <mat-card cdkDrag *ngFor="let card of freeRangeCards; index as i" 
+            [appEditable]="card.value" [cardType]="'free'" [cardIndex]="i" 
+            (onChange)="onChange($event)" (onDelete)="onDelete($event)">
+            <div class="placeholder" *cdkDragPlaceholder></div>
+        </mat-card >
     </div>
 
-    <div class="cardContainer">
-        <div class="flex-wrapper" cdkDropList cdkDropListOrientation="horizontal" (cdkDropListDropped)="drop($event)">
-            <div class="card" cdkDrag *ngFor="let card of cards; index as i" 
-                [appEditable]="card.value" [cardType]="'sorting'" [cardIndex]="i" 
-                (onChange)="onChange($event)" (onDelete)="onDelete($event)" 
-                [style.fontSize]="cardFontSize">
-                <div class="placeholder" *cdkDragPlaceholder></div>
+
+
+    <div class="flex-item" fxLayout="row" fxLayoutAlign="space-evenly center">
+        <div fxLayout="column">
+            <div>
+                <h2>Total Sorting Cards: {{cards.length}}</h2>
+                <h2>Add Sorting Cards</h2>
+                <h3>Cards will have either sequential or random values to start.</h3>
+                <mat-radio-group fxLayout="row" fxLayoutAlign="space-evenly center">
+                    <mat-radio-button #random value="random"  (change)="updateValueType(random.value)" checked="checked">Random</mat-radio-button>
+                    <mat-radio-button #sequential value="sequential" (change)="updateValueType(sequential.value)" >Sequential</mat-radio-button>
+                </mat-radio-group>
+            </div>
+
+            <div fxLayout="row" fxLayoutAlign="space-between center">
+                <mat-form-field>
+                    <input matInput #min type="text" placeholder="Min card value" (blur)="setMin(min.value)">
+                </mat-form-field>
+                <mat-form-field>
+                    <input matInput #max type="text" placeholder="Max card value" (blur)="setMax(max.value)">
+                </mat-form-field>
+            </div>
+
+            <div fxLayout="row" fxLayoutAlign="space-evenly center" *ngIf="valueType">
+                <mat-form-field>
+                    <input matInput #add type="text" placeholder="# of cards" (keyup.enter)="addCards(add.value)">
+                </mat-form-field>
+                <button mat-flat-button color="primary" (click)="addCards(add.value)">Add Cards</button>
+            </div>
+            
+            <div fxLayout="row" fxLayoutAlign="space-evenly center" *ngIf="!valueType">
+                <button mat-flat-button color="primary" (click)="addCards()">Add Cards</button>
             </div>
         </div>
-        <div class="card" cdkDrag *ngFor="let card of freeRangeCards; index as i" 
-            [appEditable]="card.value" [cardType]="'free'" [cardIndex]="i" 
-            (onChange)="onChange($event)" (onDelete)="onDelete($event)" 
-            [style.fontSize]="cardFontSize">
-            <div class="placeholder" *cdkDragPlaceholder></div>
+        <div>
+            <h2>Add a free moving card (for keeping track of indicies, etc)</h2>
+            <div fxLayout="row" fxLayoutAlign="space-evenly center">
+                <mat-form-field>
+                    <input matInput #addFree type="text" placeholder="# of cards" (keyup.enter)="addFreeRangeCards(addFree.value)">
+                </mat-form-field>
+                <button mat-flat-button color="primary" (click)="addFreeRangeCards(addFree.value)">Add Cards</button>
+            </div>
         </div>
-    </div>
-
-    <div class="cardManagement">
-        <h2>Total Sorting Cards: {{cards.length}}</h2>
-
-        <h2>Add Sorting Cards</h2>
-        <h3>Cards will have random values to start, choose the range below</h3>
-
-        <div class="valuesContainer">
-            <input #min type="text" placeholder="Min" (blur)="setMin(min.value)">
-            <input #max type="text" placeholder="Max" (blur)="setMax(max.value)">
-        </div>
-
-        <input #add type="text" placeholder="# of cards" (keyup.enter)="addCards(add.value)">
-        <button (click)="addCards(add.value)">Add Cards</button>
-                
-        <h2>Add a free moving card (for keeping track of indicies, etc)</h2>
-        <input #addFree type="text" placeholder="# of cards" (keyup.enter)="addFreeRangeCards(addFree.value)">
-        <button (click)="addFreeRangeCards(addFree.value)">Add Cards</button>
     </div>
 </div>
+

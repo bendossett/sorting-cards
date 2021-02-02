@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { UpdateEvent, DeleteEvent } from './events';
-
 class Card {
   value: string|number;
 
@@ -17,12 +16,15 @@ class Card {
 })
 export class SortingComponent implements OnInit {
 
+  private minCards: number = 0;
+  private maxCards: number = 50;
   cards: Card[];
   freeRangeCards: Card[];
-  cardFontSize: string;
-  showInstructions: boolean = true;
-  minValue: number = 0;
+  minValue: number = 1;
   maxValue: number = 99;
+  valueType: boolean = true;
+  cardSize: string = "5vw";
+  cardFontSize: string = "5vw";
 
   constructor() {
     this.cards = [
@@ -30,11 +32,10 @@ export class SortingComponent implements OnInit {
       new Card(2)
     ];
     this.freeRangeCards = [];
-    this.cardFontSize = `${(window.innerWidth / this.cards.length) * .3}px`;
   }
 
   ngOnInit(): void {
-    
+    this.calcSize();
   }
 
   drop(event: CdkDragDrop<Card[]>) {
@@ -56,41 +57,52 @@ export class SortingComponent implements OnInit {
   }
 
   setMin(value: string) {
-    if (value.trim().match(/\d/) && +value >= 0 && +value <= 99) {
+    if (value.trim().match(/\d/) && +value >= this.minCards && +value <= this.maxCards) {
       this.minValue = +value;
     }
   }
 
   setMax(value: string) {
-    if (value.trim().match(/\d/) && +value >= 0 && +value <= 99) {
+    if (value.trim().match(/\d/) && +value >= this.minCards && +value <= this.maxCards) {
       this.maxValue = +value;
     }
   }
 
-  addCards(value: string) {
-    if (value.trim().match(/\d/) && +value >= 0 && +value <= 99) {
-      for (let i = 0; i < +value; i++) {
-        this.cards.push(new Card(Math.floor(Math.random() * (this.maxValue - this.minValue) + this.minValue)));
+  addCards(value?: string) {
+    if (this.valueType) {
+      if (value && value.trim().match(/\d/) && +value >= this.minCards && +value <= this.maxCards) {
+        for (let i = 0; i < +value; i++) {
+          this.cards.push(new Card(Math.floor(Math.random() * (this.maxValue - this.minValue) + this.minValue)));
+        }
+      } else {
+        alert(`Must be a number between ${this.minCards} and ${this.maxCards}`);
       }
-      this.cardFontSize = `${(window.innerWidth / this.cards.length) * .3}px`;
     } else {
-      alert('Must be a number between 1 and 99');
+      for (let i = this.minValue; i <= this.maxValue; i++) {
+        this.cards.push(new Card(i));
+      }
     }
+    this.calcSize();
   }
 
   addFreeRangeCards(value: string) {
-    if (value.trim().match(/\d/) && +value >= 0 && +value <= 99) {
+    if (value.trim().match(/\d/) && +value >= this.minCards && +value <= this.maxCards) {
       for (let i = 0; i < +value; i++) {
         this.freeRangeCards.push(new Card());
       }
-      this.cardFontSize = `${(window.innerWidth / this.cards.length) * .3}px`;
     } else {
-      alert('Must be a number between 1 and 99');
+      alert(`Must be a number between ${this.minCards} and ${this.maxCards}`);
     }
   }
 
-  toggleInstructions() {
-    this.showInstructions = !this.showInstructions;
+  updateValueType(value: string) {
+    this.valueType = value === 'random';
+    console.log(this.valueType)
   }
 
+  calcSize() {
+    let x = (window.innerWidth / this.cards.length);
+    this.cardSize = `${x * .85 > 400 ? 400 : x * .85}px`;
+    this.cardFontSize = `${x * .65 > 400 ? 400 : x * .65}px`;
+  }
 }
