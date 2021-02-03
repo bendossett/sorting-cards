@@ -99,6 +99,14 @@ export class SortingComponent implements OnInit {
     this.cards.sort(() => Math.random() - 0.5);
   }
 
+  sortCards() {
+    this.cards.sort((a: Card, b: Card) => +a.value - +b.value);
+  }
+
+  deleteCards() {
+    this.cards.length = 0;
+  }
+
   updateValueType(value: string) {
     this.valueType = value === 'random';
     console.log(this.valueType)
