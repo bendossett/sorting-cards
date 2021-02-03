@@ -15,9 +15,10 @@
                 <mat-card *cdkDragPlaceholder></mat-card>
             </mat-card>
         </div>
-        <mat-card cdkDrag *ngFor="let card of freeRangeCards; index as i" 
+        <mat-card fxLayout="col" fxLayoutAlign="center center" cdkDrag *ngFor="let card of freeRangeCards; index as i" 
             [appEditable]="card.value" [cardType]="'free'" [cardIndex]="i" 
-            (onChange)="onChange($event)" (onDelete)="onDelete($event)">
+            (onChange)="onChange($event)" (onDelete)="onDelete($event)"
+            [style.fontSize]="cardFontSize" [style.width]="cardSize" [style.height]="cardSize">
             <div class="placeholder" *cdkDragPlaceholder></div>
         </mat-card >
     </div>
@@ -56,6 +57,11 @@
                 <button mat-flat-button color="primary" (click)="addCards()">Add Cards</button>
             </div>
         </div>
+
+        <div fxLayout="column" fxLayoutAlign="center center">
+            <button mat-flat-button color="primary" (click)="randomizeCards()">Randomize cards</button>
+        </div>
+
         <div>
             <h2>Add a free moving card (for keeping track of indicies, etc)</h2>
             <div fxLayout="row" fxLayoutAlign="space-evenly center">
